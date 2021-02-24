@@ -1,0 +1,148 @@
+-------------------------------------STRING SPLIT-------------------------------------
+
+status.Split({"delimiter1","delimiter2"},StringSplitOptions.None)
+
+status.Split(" "c)
+split by vblf for \n
+
+csharp-examples.net/dataview-rowfilter/
+
+Use ToUpper for contains
+Don't mess with transaction number
+always convert ToDouble and round
+
+-------------------------------------REGEX-------------------------------------
+regex101.com
+Slower than contains/string split
+[] -> match any elements within
+[^] -> exclude (e.g. [^1] -> match everything except 1)
+^ -> start of string
+$ -> end of string
+a-z -> ranges a to z
+b-y -> ranged b to y
+a-zA-Z -> ranges a to Z
+0-9 -> ranges 0-9
+| -> or
+* or ? -> reverse greediness
++ -> number of times it matches
+{} -> number of times it repeats e.g.[0-9]{11}  -> 11 numbers (if string has 12 numbers, first 11 will still match)
+{9,} -> match at least 9 characters
+
+Metacharacters
+\d digits   \D not a digit
+\w word (includes 0-9 and _)
+\s white space
+\t  tabs
+? makes the character before optional
+. any character except newline
+* 0 or more quantifier
++ 1 or more quantifier
+
+Flags
+g-Global
+i-case insensitive
+m-multiple match
+
+/\#\w+/g
+/(Java|ECMA)script/g
+"Javascript"
+Matches both Java and Javascript
+to avoid that, use capturing/non-capturing
+/(?:Java|ECMA)script
+
+Use parentheses and /number to repeat
+e.g. (test)(/s)/1/2/1
+matches "test test test"
+
+-------------------------------------DATETIME-------------------------------------
+
+DateTime.ParseExact("1/2/2019","d/M/yyyy",System.Globalization.DateTimeFormatInfo.InvariantInfo,Globalization.DateTimeStyles.None).Month = 2
+
+UiPath Select Statement [Dates]>'M/d/yyyy'  (Read string as M/d/yyyyy)
+
+UiPath read cell 1/2/2000 (read according to global culture d/M/yyyy)
+However, cellvalue.ToString = 2/1/2000 (M/d/yyyy)
+
+If UiPath reads cells that is written using writecell,
+it reads as string (not according to global culture)
+
+If UiPath reads cells that is a formula, or vlookup to other cell
+it reads as string (not according to global culture)
+
+Converting Datetime from Double
+DateTime yourDate = DateTime.FromOADate(42713)
+
+Date difference betweeen two dates
+DateDiff(DateInterval.DayofYear, “2016-01-30”,“2016-01-30”)
+
+Create Date
+
+
+
+-------------------------------------DATATABLE-------------------------------------
+Multisort
+=(From x in ACTIVEDT.AsEnumerable() Order By Convert.ToString(x("username")), _
+  Convert.ToString(config(x("HIGHEST EDUCATION LEVEL").ToString.Trim)), _
+  Convert.ToString(config(x("QUALIFICATION OBTAINED").ToString.Trim)), _
+  Convert.ToString(config(x("CLASS OF DEGREE").ToString.Trim)), _
+  Convert.ToString((x("DATE ATTAINED"))) DESCENDING _
+  Select x).CopyToDataTable
+  
+Cloning - Copies the structure of the datatable (without the data)
+CDbl - Convert to double
+
+Remove duplicates of particular column
+NewDT = DT.AsEnumerable().GroupBy(Function(a) a.Field(of DATATYPE)("COLUMNNAME")).Select(function(b) b.First).CopyToDataTable()
+
+Matches(remove all number before a particular expression)
+Use matches activity workflow
+input 12345abc789
+pattern"[A-Z]+\d+.*"
+ReGexOption: IgnoreCase,Compliled,Singleline
+Output abc789
+
+Vlookup
+(cell reference, array table, Col index, approx. match)
+
+Calculating age, use YearFrac
+
+To get specific column index
+
+Read Sheet (dT)
+Assign Col Ind = 0 (Int)
+
+For each col in dT.Columns
+  If (Condition Match)
+  Assign Col Ind = dT.Columns.Indexof(Item)
+  Break;
+
+Convert([colName],System.String) is needed to compare against empty string (slow if have to convert entire datatable)
+If datatype is int,double,etc
+
+If Statement in assign
+a=if(n1>n2,"a","b")
+"b" can be replaced with another if.
+Line continuation " _"
+
+Get Workbook sheetname
+-> Open excel application scope
+workbook.getsheets(int)
+Environment.CurrentDirectory
+
+Pivot table -> Compare one column with another
+Vlookup -> requires a primary key (Unique Identifier)
+
+
+-------------------------------------EXCEL MACROS-------------------------------------
+Setting up: File -> Options -> Customize Ribbon -> check 'Developer'
+(macro security) File -> Options -> trust center -> trust center settings -> macro settings -> enable all
+workbook must be saved as macro enabled workbook (.xlsm)
+
+Download XLS
+Read Range (InputDT)
+Pre-build excel.xlsm
+Clear xlsm data
+Write Range(InputDT)
+Executre Macro
+Read range OutputDT
+Write range (original excel or create a new one)
